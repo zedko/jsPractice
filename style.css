@@ -1,0 +1,39 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.btn-cart {
+    border-radius: 4px;
+    background-color: #ffd446;
+    padding: 7px;
+    border: 1px solid #ffd446;
+    margin: 10px 0 0 10px;
+}
+
+.btn-cart:hover {
+    background-color: white;
+    cursor: pointer;
+}
+
+.products {
+    margin: 10px 0 0 10px;
+}
+
+.product-item {
+    min-width: 20%;
+    display: inline-block;
+    padding: 0 25px 0 0;
+}
+
+.product-item > button {
+    border-radius: 4px;
+    background-color: seagreen;
+    padding: 7px;
+    border: 1px solid seagreen;
+}
+
+.product-item > button:hover {
+    background-color: white;
+    cursor: pointer;
+}

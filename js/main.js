@@ -5,17 +5,20 @@ const products = [
     {id: 4, title: 'Gamepad', price: 50},
 ];
 
-const renderProduct = (title, price) => {
+// значение по умолчанию - первый объект в массиве products
+// передавая в функцию объект мы упростили (и даже улучшили для дальнейших доработок) запись функции
+const renderProduct = (product = products[0]) => {
     return `<div class="product-item">
-                <h3>${title}</h3>
-                <p>${price}</p>
+                <h3>${product.title}</h3>
+                <p>${product.price}</p>
                 <button class="buy-btn">Купить</button>
             </div>`
 };
+
 const renderPage = list => {
-    const productsList = list.map(item => renderProduct(item.title, item.price));
-    console.log(productsList);
-    document.querySelector('.products').innerHTML = productsList;
+    const productsList = list.map(item => renderProduct(item));
+    // преобразование productsList в строку удалит запятые
+    document.querySelector('.products').innerHTML = productsList.join("");
 };
 
 renderPage(products);
