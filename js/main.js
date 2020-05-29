@@ -1,21 +1,5 @@
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
-// let getRequest = (url, cb) => {
-//     let xhr = new XMLHttpRequest();
-//     // window.ActiveXObject -> xhr = new ActiveXObject()
-//     xhr.open("GET", url, true);
-//     xhr.onreadystatechange = () => {
-//         if(xhr.readyState === 4){
-//             if(xhr.status !== 200){
-//                 console.log('Error');
-//             } else {
-//                 cb(xhr.responseText);
-//             }
-//         }
-//     };
-//     xhr.send();
-// };
-
 class ProductsList {
     constructor(container = '.products'){
         this.container = container;
@@ -27,13 +11,7 @@ class ProductsList {
                 this.render()
             });
     }
-    // _fetchProducts(cb){
-    //     getRequest(`${API}/catalogData.json`, (data) => {
-    //         this.goods = JSON.parse(data);
-    //         console.log(this.goods);
-    //         cb();
-    //     })
-    // }
+
     _getProducts(){
         return fetch(`${API}/catalogData.json`)
             .then(result => result.json())
@@ -55,7 +33,6 @@ class ProductsList {
     }
 }
 
-
 class ProductItem {
     constructor(product, img = 'https://placehold.it/200x150'){
         this.title = product.product_name;
@@ -69,11 +46,82 @@ class ProductItem {
                 <div class="desc">
                     <h3>${this.title}</h3>
                     <p>${this.price} $</p>
-                    <button class="buy-btn">Купить</button>
+                    <button class="buy-btn" data-buyid="${this.id}" onclick="ProductItem.addToBasket(this.dataset.buyid)">Купить</button>
                 </div>
             </div>`
     }
+
+    // ДОБАВЛЕНИЕ В КОРЗИНУ ПО КЛИКУ "КУПИТЬ"
+    static addToBasket(id) {
+        console.log(`Отправляем на нужный для добавления в корзину URL этот ID товара --- ${id}`);
+        fetch(`${API}/addToBasket.json`) // получаем ответ сервера и далее обрабатываем его
+            .then(responce => responce.json())
+            .then(data => data.result=="1"?alert("Добавили(фиктивно)"):alert("Ошибка"))
+
+    };
 }
 
+class CartList{
+    constructor(container = ".cart-list") {
+        this.container = container;
+        this.productList = [];
+        this.productObjList = [];
+        this.total = 0; // общая стоимость корзины
+        this.getBasket(); // запрашиваем состояние корзины на сервере
+    }
+
+    getBasket() {
+        fetch(`${API}/getBasket.json`)
+            .then(answer => answer.json())
+            .then(data =>{
+                this.productList=[...data.contents];  // все товары в корзине
+                this.total=data.amount; // общая стоиомость корзины
+                this.render()
+            })
+    }
+
+    render(){
+        const block = document.querySelector(this.container);
+        block.innerHTML = `Итого: ${this.total}`;
+
+        for (let product of this.productList){
+            const cartObj = new CartItem(product);
+            this.productObjList.push(cartObj);
+            block.insertAdjacentHTML('beforeend', cartObj.render());
+        }
+    }
+}
+
+class CartItem extends ProductItem {
+    constructor(product, img = 'https://placehold.it/50x36') {
+        super(product, img);
+        this.quantity = product.quantity;
+    }
+
+    render() {
+        return `
+        <div class="cart-item">
+            <img src=${this.img}/><p><b>${this.title}</b> --- ${this.price}₽ x ${this.quantity} шт.</p>
+            <button class="minus-btn" data-idCartItem="${this.id}" onclick="CartItem.removeFromBasket(this.dataset.idcartitem)"> - </button>           
+        </div>        
+        `
+    }
+
+    static removeFromBasket(id) {
+        console.log(`Отправляем на нужный для удаления из корзины URL этот ID товара --- ${id}`);
+        fetch(`${API}/deleteFromBasket.json`) // получаем ответ сервера и далее обрабатываем его
+            .then(responce => responce.json())
+            .then(data => data.result=="1"?alert("Удалили(фиктивно)"):alert("Ошибка"))
+
+    };
+
+}
+
+
+
 let list = new ProductsList();
+let basket = new CartList();
+
+
+
 

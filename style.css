@@ -26,14 +26,31 @@
     padding: 0 25px 0 0;
 }
 
-.product-item > button {
+.product-item button {
     border-radius: 4px;
     background-color: seagreen;
     padding: 7px;
     border: 1px solid seagreen;
 }
 
-.product-item > button:hover {
+.product-item button:hover {
     background-color: white;
     cursor: pointer;
+}
+
+.cart-list {
+    margin: 5px;
+}
+.cart-item {
+    margin: 5px;
+}
+
+.cart-item * {
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 2px;
+}
+
+.minus-btn {
+    padding: 2px;
 }
