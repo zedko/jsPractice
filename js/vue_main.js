@@ -1,5 +1,5 @@
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
-
+/*
 class ProductsList {
     constructor(container = '.products'){
         this.container = container;
@@ -120,8 +120,123 @@ class CartItem extends ProductItem {
 
 
 let list = new ProductsList();
-let basket = new CartList();
+let basket = new CartList();*/
+
+//все товары, которые есть в магазине. наполняется из файла catalogData.json
+class ProductList{
+    // url - catalogData.json
+    constructor(url) {
+        this.goods = [];//массив товаров
+        this.filtered = this.goods;
+        this._getProducts(url);
+    }
+
+    _getProducts(url){
+            fetch(`${API}/${url}`)
+            .then(result => result.json())
+            .catch(error => {
+                console.log(error);
+            })
+            .then(data => {
+                    [...data].forEach(item => this.goods.push(new Product(item)));
+                });
+    }
+
+    filter(str) {
+        let pattern = new RegExp(str,"i");
+        this.filtered = this.goods.filter(item => {
+            if (item.title.match(pattern)!=null)
+                return item;
+        })
+    }
+}
+
+class Product {
+    constructor(product, img = 'https://placehold.it/200x150', quantity = 0){
+        this.title = product.product_name;
+        this.price = product.price;
+        this.id = product.id_product;
+        this.img = img;
+        this.smallImg = 'https://placehold.it/50x30';
+        this.cartQuantity = quantity;
+    }
+}
+
+class Cart extends ProductList{
+    constructor(url) {
+        super(url);
+        this.amount = 0;
+        this.countGoods = 0;
+        this.shown = false
+    }
+    _getProducts(url){
+        fetch(`${API}/${url}`)
+            .then(result => result.json())
+            .catch(error => {
+                console.log(error);
+            })
+            .then(data => {
+                // ищем среди ответа сервера товары, которые есть в нашем магазине (в ProductList.goods) и добавляем их в корзину с нужными параметрами.
+                [...data.contents].forEach(product => {
+                    let productCheck = vm.products.goods.find(item => item.id === product.id_product);
+                    if (productCheck === undefined){
+                        console.log("Этого продукта нет в магазине")
+                    }
+                    else {this.goods.push(productCheck);
+                    productCheck.cartQuantity = product.quantity}
+                });
+                this.amount = data.amount;
+                this.countGoods = data.countGoods;
+            });
+    }
+// Добавляем элемент в корзину, если его там нет или прибавляем количество
+    addItem(id) {
+        let product = this.goods.find(item => item.id == id);
+        if (product === undefined){
+            product = vm.products.goods.find(item => item.id == id);
+            this.goods.push(product);
+        }
+            product.cartQuantity++;
+    }
+    // удаляем элемент из корзины если количество = 0
+    removeItem (id) {
+        let product = this.goods.find(item => item.id == id);
+        product.cartQuantity--;
+        if (product.cartQuantity === 0){
+            this.goods.splice(this.goods.findIndex(item => item == product),1);
+            console.log("Ушли в нули");
+        }
+        // else {
+        //     product.cartQuantity--;
+        //     console.log(false);
+        // }
+        // console.log(product);
+        // this.goods.push(product);
+    }
+}
+
+let vm = new Vue({
+    el:'#vueapp',
+    data:{
+        products: new ProductList("catalogData.json"),
+        cart: new Cart("getBasket.json"),
+        search: ""
+
+
+    },
+    methods:{
+        toCart: function(event){
+            console.log(event.target.id);
+            this.cart.addItem(event.target.id);
+        },
+        toggleCart: function() {
+            this.cart.shown =  !this.cart.shown
+        },
+        filter: function(str) {
+            this.products.filter(str)
+        }
 
 
 
-
+    }
+});
