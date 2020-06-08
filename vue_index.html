@@ -4,40 +4,25 @@
     <meta charset="UTF-8">
     <title>Интернет-магазин</title>
     <link rel="stylesheet" href="style.css">
+    <script src="components/Search.js"></script>
 
 </head>
 <body>
 <div id="vueapp">
     <header>
-        <form class="search" action="" v-on:submit.prevent="filter(search)">
-            <input v-model="search" v-on:keyup="filter(search)" placeholder="Искать ..." type="search">
-            <button  type="submit"></button>
-        </form>
-        <button class="btn-cart" type="button" @click="toggleCart"> <img src="online.png" alt=""></button>
-        <div v-if="cart.shown" class="cart-list">
-            <p v-show="cart.goods.length == 0">Корзина пуста</p>
-            <div class="cart-item" v-for="product of cart.goods" :key="product.id">
-                <img :src="product.smallImg"/><p><b>{{product.title}}</b> --- {{product.price}}₽ x {{product.cartQuantity}} шт.</p>
-                <button class="minus-btn" data-idCartItem="${this.id}" @click="cart.removeItem(product.id)"> - </button>
-            </div>
-        </div>
+        <search v-model="search" @filter="filter"></search>
+        <cart :cart="cart" @show="toggleCart"></cart>
     </header>
     <main>
-       <div class="catalog">Каталог товара</div>
-        <div class="products" id="products">
-            <div class="product-item" v-for="product of products.filtered" :key="product.id">
-                <img :src="product.img" alt="Some img">
-                <div class="desc">
-                    <h3>{{product.title}}</h3>
-                    <p>{{product.price}}</p>
-                    <button class="buy-btn" :id="product.id" @click="toCart">Купить</button>
-                </div>
-            </div>
-        </div>
+        <products :products="products" @buy="toCart"></products>
     </main>
 <div class="footer">Все права - это все права</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="components/Search.js"></script>
+<script src="components/Cart.js"></script>
+<script src="components/Products.js"></script>
 <script src="js/vue_main.js"></script>
+
 </body>
 </html>

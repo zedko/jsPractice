@@ -195,13 +195,16 @@ class Cart extends ProductList{
         if (product === undefined){
             product = vm.products.goods.find(item => item.id == id);
             this.goods.push(product);
+
         }
             product.cartQuantity++;
+            this.amount += product.price;
     }
-    // удаляем элемент из корзины если количество = 0
+    // Уменьшаем количество или удаляем элемент из корзины если количество = 0
     removeItem (id) {
         let product = this.goods.find(item => item.id == id);
         product.cartQuantity--;
+        this.amount -= product.price;
         if (product.cartQuantity === 0){
             this.goods.splice(this.goods.findIndex(item => item == product),1);
             console.log("Ушли в нули");
@@ -215,6 +218,7 @@ class Cart extends ProductList{
     }
 }
 
+
 let vm = new Vue({
     el:'#vueapp',
     data:{
@@ -225,18 +229,21 @@ let vm = new Vue({
 
     },
     methods:{
-        toCart: function(event){
-            console.log(event.target.id);
-            this.cart.addItem(event.target.id);
+        toCart: function(id){
+            console.log(`Покупаем товар с ID ${id}`);
+            this.cart.addItem(id);
         },
         toggleCart: function() {
             this.cart.shown =  !this.cart.shown
         },
         filter: function(str) {
             this.products.filter(str)
-        }
+        },
+
+
 
 
 
     }
 });
+

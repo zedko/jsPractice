@@ -2,12 +2,7 @@
     margin: 0;
     padding: 0;
 }
-.headhead {
-    height: 50px;
-    margin: 10px 10px 0px 10px;
-  
-   
-}
+
 .btn-cart {
     margin: 10px 10px 0 10px;
     float: right;
@@ -16,15 +11,12 @@
     border-width: 0;
     border-radius: 40px;
     outline: 0 !important;
-
-    
 }
 
 .btn-cart:hover {
     background-color: white;
     cursor: pointer;
 }
-
 
 .catalog{
     text-align: center;
@@ -60,10 +52,20 @@
     background-color: white;
     cursor: pointer;
 }
-
+/*cart*/
+.cart-block {
+    position: absolute;
+    right: 0;
+    top: 0;
+    min-width: 400px;
+}
+.cart-summary {
+    position: absolute;
+    top: 25px;
+    right: 100px;
+}
 .cart-list {
     margin: 5px;
-
     position: absolute;
     right: 0;
     top: 53px;
@@ -92,7 +94,6 @@
     
 }
 /*Форма поиска*/
-/** {box-sizing: border-box;}*/
 
 form.search {
 
